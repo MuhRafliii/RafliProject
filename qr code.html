@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rafli QR Generator</title>
+    <style>
+        /* Reset and Basic Styles */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background: linear-gradient(to bottom right, #2980b9, #6dd5fa, #ffffff);
+            color: #333;
+        }
+
+        .container {
+            background-color: #fff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2em;
+            margin-bottom: 20px;
+            color: #2980b9;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            font-size: 1rem;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            margin-bottom: 20px;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus {
+            border-color: #2980b9;
+            outline: none;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            font-size: 1rem;
+            cursor: pointer;
+            background-color: #2980b9;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        button:hover {
+            background-color: #3498db;
+        }
+
+        #img {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .save-btn {
+            background-color: #2980b9;
+            color: white;
+            padding: 10px 20px;
+            font-size: 1rem;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            margin-top: 10px;
+        }
+
+        .save-btn:hover {
+            background-color: #2980b9;
+        }
+
+        canvas {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>QR Code Generator</h1>
+        <input type="text" placeholder="Enter a link..." />
+        <button id="generate-btn">Generate QR</button>
+        <div id="img"></div>
+        <canvas id="qrCanvas" width="400" height="400"></canvas>
+    </div>
+
+    <script>
+        const button = document.querySelector('#generate-btn');
+        const imgContainer = document.querySelector('#img');
+        const inputField = document.querySelector('input[type="text"]');
+        const canvas = document.querySelector('#qrCanvas');
+        const ctx = canvas.getContext('2d');
+
+        button.addEventListener('click', () => {
+            if (inputField.value.trim() !== "") {
+                fetch(`https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${inputField.value}`)
+                    .then(response => response.blob())
+                    .then(blob => {
+                        const objectURL = URL.createObjectURL(blob);
+                        const qrImage = new Image();
+                        qrImage.src = objectURL;
+
+                        qrImage.onload = () => {
+                            // Clear previous canvas content
+                            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                            // Draw background with border
+                            ctx.fillStyle = "#ffffff";
+                            ctx.fillRect(0, 0, canvas.width, canvas.height);
+                            ctx.strokeStyle = "#2980b9";
+                            ctx.lineWidth = 10;
+                            ctx.strokeRect(10, 10, canvas.width - 20, canvas.height - 20);
+
+                            // Draw enlarged QR code
+                            ctx.drawImage(qrImage, 75, 75, 250, 250);
+
+                            // Add centered text below QR code
+                            ctx.fillStyle = "#333";
+                            ctx.font = "16px Arial";
+                            const text = "QR Code Generator by Rafli";
+                            const textWidth = ctx.measureText(text).width;
+                            const xPosition = (canvas.width - textWidth) / 2;
+                            ctx.fillText(text, xPosition, 380); // Adjusted text position
+
+                            // Display and provide download link
+                            imgContainer.innerHTML = `
+                                <img src="${canvas.toDataURL()}" alt="Styled QR Code" height="200px" width="200px">
+                                <a href="${canvas.toDataURL()}" download="RafliQRGenerator.png" class="save-btn">Save QR Code</a>
+                            `;
+                            button.style.display = 'none';
+                        };
+                    })
+                    .catch(error => {
+                        console.error('There was a problem with the fetch operation:', error);
+                    });
+            } else {
+                alert("Please enter a valid link.");
+            }
+        });
+    </script>
+</body>
+</html>
