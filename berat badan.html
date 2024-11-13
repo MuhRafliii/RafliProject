@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perhitungan Berat Badan Ideal</title>
+    <style>
+        /* Reset and Basic Styles */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background: linear-gradient(to bottom right, #2980b9, #6dd5fa, #ffffff);
+            color: #333;
+        }
+
+        .container {
+            background-color: #fff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2em;
+            margin-bottom: 20px;
+            color: #2980b9;
+        }
+
+        label {
+            font-size: 1rem;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 12px;
+            font-size: 1rem;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            margin-bottom: 20px;
+            transition: border-color 0.3s;
+        }
+
+        input:focus,
+        select:focus {
+            border-color: #2980b9;
+            outline: none;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            font-size: 1rem;
+            cursor: pointer;
+            background-color: #2980b9;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        button:hover {
+            background-color: #3498db;
+        }
+
+        #result {
+            margin-top: 20px;
+            font-size: 1.2rem;
+            color: #333;
+        }
+
+        /* Spinner loading */
+        .loading-spinner {
+            border: 4px solid #f3f3f3; /* Light gray */
+            border-top: 4px solid #2980b9; /* Blue */
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Perhitungan Berat Badan Ideal</h1>
+        <form id="ibw-form">
+            <label for="height">Tinggi Badan (cm):</label>
+            <input type="number" id="height" name="height" step="0.1" placeholder="Masukan Tinggi Badan" required>
+            <label for="gender">Jenis Kelamin:</label>
+            <select id="gender" name="gender" required>
+                <option value="">Pilih Jenis Kelamin</option>
+                <option value="male">Laki-laki</option>
+                <option value="female">Perempuan</option>
+            </select>
+            <button type="submit">Hitung</button>
+        </form>
+        <div id="loading" class="loading-spinner" style="display:none;"></div>
+        <div id="result" style="display:none;">
+            <p>Berat Badan Ideal Anda adalah: <span id="ibw"></span> kg</p>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('ibw-form');
+        const result = document.getElementById('result');
+        const ibw = document.getElementById('ibw');
+        const loading = document.getElementById('loading');
+
+        form.addEventListener('submit', e => {
+            e.preventDefault();
+            const height = parseFloat(document.getElementById('height').value);
+            const gender = document.getElementById('gender').value;
+            let ibwValue;
+
+            if (!height || gender === "") {
+                alert('Harap masukan semua data dengan benar!');
+                return;
+            }
+
+            // Tampilkan loading spinner
+            loading.style.display = 'block';
+            result.style.display = 'none';
+
+            setTimeout(() => {
+                // Perhitungan Berat Badan Ideal
+                if (gender === 'male') {
+                    ibwValue = (height - 100) - (height - 100) * 0.10;
+                } else if (gender === 'female') {
+                    ibwValue = (height - 100) - (height - 100) * 0.15;
+                }
+
+                // Sembunyikan loading spinner
+                loading.style.display = 'none';
+                ibw.textContent = ibwValue.toFixed(1);
+                result.style.display = 'block';
+            }, 1500); // Simulasi delay untuk loading
+        });
+    </script>
+</body>
+</html>
