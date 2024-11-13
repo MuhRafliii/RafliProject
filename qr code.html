@@ -12,16 +12,18 @@
             padding: 0;
         }
 
-        body {
-            font-family: 'Arial', sans-serif;
+        /* Struktur untuk menempatkan konten utama di tengah dan footer di bawah */
+        html, body {
+            height: 100%;
             display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
+            flex-direction: column;
+            font-family: 'Arial', sans-serif;
             background: linear-gradient(to bottom right, #2980b9, #6dd5fa, #ffffff);
             color: #333;
+            margin: 0;
         }
 
+        /* Kontainer utama */
         .container {
             background-color: #fff;
             padding: 40px;
@@ -30,6 +32,7 @@
             max-width: 400px;
             width: 100%;
             text-align: center;
+            margin: auto; /* Agar konten berada di tengah */
         }
 
         h1 {
@@ -113,6 +116,25 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+
+        /* Footer styling */
+        footer {
+            width: 100%;
+            background-color: #2980b9;
+            color: white;
+            text-align: center;
+            padding: 20px 0;
+            margin-top: auto; /* Agar footer berada di bawah konten */
+        }
+
+        .footer-container p {
+            margin: 5px 0;
+            font-size: 14px;
+        }
+
+        .footer-container p:first-child {
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
@@ -126,6 +148,13 @@
         </div>
         <canvas id="qrCanvas" width="400" height="400"></canvas>
     </div>
+
+    <footer>
+      <div class="footer-container">
+          <p>&copy; 2024 Rafli QR Generator | All Rights Reserved</p>
+          <p>Designed with by Muhammad Rafli</p>
+      </div>
+  </footer>
 
     <script>
         const button = document.querySelector('#generate-btn');
